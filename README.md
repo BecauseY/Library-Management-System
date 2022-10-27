@@ -1,6 +1,6 @@
 # Library-Management-System
 
-图书管理系统
+图书管理系统，学弟学妹们记得star和fork哦
 
 详见  说明.pdf
 
