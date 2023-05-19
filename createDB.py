@@ -2,15 +2,15 @@ import time
 import pymysql
 
 Config = {
-    "host": '127.0.0.1',
+    "host": 'localhost',
     "user": 'root',
-    "pwd": 'root'
+    "pwd": '123456'
 }
 
 
 def create_database():
     try:
-        conn = pymysql.connect(Config['host'], Config['user'], Config['pwd'])
+        conn = pymysql.connect(host=Config['host'], user=Config['user'], password=Config['pwd'])
         cursor = conn.cursor()
         conn.autocommit(True)
         cursor.execute("CREATE DATABASE library3")
