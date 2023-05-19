@@ -12,12 +12,7 @@ CONFIG = {
 def signin(user_message: dict) -> dict:
     ans = None
     try:
-        conn = pymysql.connect(
-            host='localhost',
-            user='root',
-            passwd='123456',
-            database='library3'
-        )
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], passwd=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
         SELECT aid
@@ -87,7 +82,7 @@ def encrypt(val):
     h.update(bytes(password, encoding='UTF-8'))
     result = h.hexdigest()
     # 注释下面一行即可加密
-    # result = val
+    result = val
     return result
 
 
