@@ -18,6 +18,9 @@ class Signup(QGroupBox):
         name = QLabel()
         name.setText('姓名')
 
+        sex = QLabel()
+        sex.setText('性别')
+
         password = QLabel()
         password.setText('密码')
 
@@ -48,6 +51,14 @@ class Signup(QGroupBox):
         self.nameInput.initText = '请输入姓名'
         self.nameInput.setTextMargins(5, 5, 5, 5)
         self.nameInput.mousePressEvent = lambda x: self.inputClick(self.nameInput)
+
+        # 性别输入框
+        self.sexInput = QLineEdit()
+        self.sexInput.setFixedSize(400, 40)
+        self.sexInput.setText('请输入性别')
+        self.sexInput.initText = '请输入性别'
+        self.sexInput.setTextMargins(5, 5, 5, 5)
+        self.sexInput.mousePressEvent = lambda x: self.inputClick(self.sexInput)
 
         # 密码
         self.passwordInput = QLineEdit()
@@ -104,6 +115,7 @@ class Signup(QGroupBox):
         self.bodyLayout.addWidget(self.subTitle)
         self.bodyLayout.addWidget(self.accountInput)
         self.bodyLayout.addWidget(self.nameInput)
+        self.bodyLayout.addWidget(self.sexInput)
         self.bodyLayout.addWidget(self.passwordInput)
         self.bodyLayout.addWidget(self.repPasswordInput)
         self.bodyLayout.addWidget(self.deptInput)
@@ -116,7 +128,7 @@ class Signup(QGroupBox):
         self.initUI()
 
     def inputClick(self, e):
-        for i in range(2, 9):
+        for i in range(2, 10):
             item = self.bodyLayout.itemAt(i).widget()
             if item.text() == '':
                 item.setText(item.initText)
@@ -134,7 +146,7 @@ class Signup(QGroupBox):
         self.setMyStyle()
 
     def getInfo(self):
-        for i in range(2, 9):
+        for i in range(2, 10):  # 从2开始，因为前两个是标题
             item = self.bodyLayout.itemAt(i).widget()
             if item.text() == item.initText:
                 item.setText('')
@@ -144,6 +156,7 @@ class Signup(QGroupBox):
             'password': self.passwordInput.text(),
             'repassword': self.repPasswordInput.text(),
             'sname': self.nameInput.text(),
+            'sex': self.sexInput.text(),
             'dept': self.deptInput.text(),
             'majority': self.majorInput.text(),
             'max_book': self.maxNumInput.text(),

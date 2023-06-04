@@ -22,6 +22,7 @@ def create_database():
             `sno` varchar(15),
             `password` varchar(70),
             `sname` varchar(10),
+            `sex` varchar(2),
             `dept` varchar(20),
             `majority` varchar(20),
             `max_book` int,
