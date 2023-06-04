@@ -8,8 +8,6 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QGridLayout, QGroupBox,
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import Qt, QSize
 import func
-
-
 # import func
 
 
@@ -27,7 +25,7 @@ class StudentPage(QWidget):
         self.setTitleBar()
 
         # 分割
-        self.body = QSplitter(Qt.Vertical, self)
+        self.body = QSplitter(Qt.Vertical,self)
         self.setLeftMunu()
         self.content = None
         self.setContent()
@@ -48,7 +46,7 @@ class StudentPage(QWidget):
 
         self.account = QToolButton()
         self.account.setIcon(QIcon('icon/person.png'))
-        self.account.setText(self.stu_mes['sno'] + self.stu_mes['sname'] + '，你好！')
+        self.account.setText(self.stu_mes['sno']+self.stu_mes['sname']+'，你好！')
         self.account.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.account.setFixedHeight(20)
         self.account.setEnabled(False)
@@ -125,7 +123,7 @@ class StudentPage(QWidget):
         self.menu.setContentsMargins(0, 0, 0, 0)
         self.body.addWidget(self.menu)
 
-    def switch(self, index, btn):
+    def switch(self, index, btn):   # 切换页面,index为页面编号
         self.focus = index
         for i in self.btnList:
             i.setStyleSheet('''
@@ -158,7 +156,7 @@ class StudentPage(QWidget):
             self.content = Detial(self.stu_mes)
         self.body.addWidget(self.content)
 
-    def setMyStyle(self):
+    def setMyStyle(self): # 设置样式
         self.setStyleSheet('''
         QWidget{
             background-color: white;
@@ -246,7 +244,7 @@ class Books(QGroupBox):
     # 设置搜索框
     def setSearchBar(self):
         self.selectBox = QComboBox()
-        self.selectBox.addItems(['图书编号ISBN', '分类', '出版社', '作者', '书名'])
+        self.selectBox.addItems(['书号', '分类', '出版社', '作者', '书名'])
         self.selectBox.setFixedHeight(30)
         self.searchTitle = QLabel()
         self.searchTitle.setText('搜索书籍')
@@ -271,9 +269,8 @@ class Books(QGroupBox):
 
     # 搜索方法
     def searchFunction(self):
-        convert = {'图书编号ISBN': 'bno', '分类': 'class', '出版社': 'press', '作者': 'author', '书名': 'bname', '': 'bname'}
-        self.book_list = func.search_book(self.searchInput.text(), convert[self.selectBox.currentText()],
-                                          self.stu_mes['sno'])
+        convert = {'书号': 'bno', '分类': 'class', '出版社': 'press', '作者': 'author', '书名': 'bname', '': 'bname'}
+        self.book_list = func.search_book(self.searchInput.text(), convert[self.selectBox.currentText()], self.stu_mes['sno'])
         if self.book_list == []:
             print('未找到')
         if self.table is not None:
@@ -295,7 +292,7 @@ class Books(QGroupBox):
         # self.table.setColumnWidth(4, 100)
         self.table.setColumnWidth(6, 80)
 
-        self.table.setItem(0, 0, QTableWidgetItem('图书编号ISBN'))
+        self.table.setItem(0, 0, QTableWidgetItem('书号'))
         self.table.setItem(0, 1, QTableWidgetItem('书名'))
         self.table.setItem(0, 2, QTableWidgetItem('作者'))
         self.table.setItem(0, 3, QTableWidgetItem('出版日期'))
@@ -334,7 +331,7 @@ class Books(QGroupBox):
         itemPOSITION = QTableWidgetItem(val[5])
         itemPOSITION.setTextAlignment(Qt.AlignCenter)
 
-        itemSUM = QTableWidgetItem(str(val[6]) + '/' + str(val[7]))
+        itemSUM = QTableWidgetItem(str(val[6])+'/'+str(val[7]))
         itemSUM.setTextAlignment(Qt.AlignCenter)
 
         itemCLASSIFICATION = QTableWidgetItem(val[8])
@@ -488,12 +485,11 @@ class BorrowingBooks(QGroupBox):
         self.table.setColumnWidth(4, 100)
         self.table.setColumnWidth(5, 150)
 
-        self.table.setItem(0, 0, QTableWidgetItem('图书编号ISBN'))
+        self.table.setItem(0, 0, QTableWidgetItem('书号'))
         self.table.setItem(0, 1, QTableWidgetItem('书名'))
         self.table.setItem(0, 2, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 3, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('罚金'))
-        self.table.setColumnHidden(4, True)
         self.table.setItem(0, 5, QTableWidgetItem('操作'))
 
         for i in range(6):
@@ -670,12 +666,11 @@ class History(QGroupBox):
         self.table.setColumnWidth(3, 175)
         self.table.setColumnWidth(4, 100)
 
-        self.table.setItem(0, 0, QTableWidgetItem('图书编号ISBN'))
+        self.table.setItem(0, 0, QTableWidgetItem('书号'))
         self.table.setItem(0, 1, QTableWidgetItem('书名'))
         self.table.setItem(0, 2, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 3, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('罚金'))
-        self.table.setColumnHidden(4, True)
 
         for i in range(5):
             self.table.item(0, i).setTextAlignment(Qt.AlignCenter)
@@ -816,6 +811,20 @@ class Detial(QWidget):
         nameLayout.addWidget(self.nameInput)
         nameLayout.addStretch()
 
+        # 性别输入框
+        sex = QLabel()
+        sex.setText('性别')
+        self.sexInput = QLineEdit()
+        self.sexInput.setFixedSize(1250, 40)
+        self.sexInput.setText(self.stu_mes['sex'])
+        self.sexInput.setTextMargins(5, 5, 5, 5)
+        self.sexInput.setEnabled(False)
+        sexLayout = QHBoxLayout()
+        sexLayout.addStretch()
+        sexLayout.addWidget(sex)
+        sexLayout.addWidget(self.sexInput)
+        sexLayout.addStretch()
+
         # 密码
         password = QLabel()
         password.setText('密码')
@@ -910,6 +919,7 @@ class Detial(QWidget):
         self.bodyLayout = QVBoxLayout()
         self.bodyLayout.addLayout(accountLayout)
         self.bodyLayout.addLayout(nameLayout)
+        self.bodyLayout.addLayout(sexLayout)
         self.bodyLayout.addLayout(passwordLayout)
         self.bodyLayout.addLayout(repPasswordLayout)
         self.bodyLayout.addLayout(deptLayout)
@@ -920,7 +930,7 @@ class Detial(QWidget):
         self.setLayout(self.bodyLayout)
         self.initUI()
 
-    def saveFunction(self):
+    def saveFunction(self): # 保存
         if self.passwordInput.text() != self.repPasswordInput.text():
             print('密码不一致')
             return
@@ -930,6 +940,7 @@ class Detial(QWidget):
         if self.passwordInput.text() != '******':
             self.stu_mes['password'] = func.encrypt(self.passwordInput.text())
         self.stu_mes['sname'] = self.nameInput.text()
+        self.stu_mes['sex'] = self.sexInput.text()
         self.stu_mes['dept'] = self.deptInput.text()
         self.stu_mes['majority'] = self.majorInput.text()
         self.stu_mes['max_book'] = int(self.maxNumInput.text())
@@ -938,6 +949,7 @@ class Detial(QWidget):
             return
         self.save.setEnabled(False)
         self.nameInput.setEnabled(False)
+        self.sexInput.setEnabled(False)
         self.passwordInput.setEnabled(False)
         self.repPasswordInput.setEnabled(False)
         self.deptInput.setEnabled(False)
@@ -945,9 +957,10 @@ class Detial(QWidget):
         self.maxNumInput.setEnabled(False)
         self.setMyStyle()
 
-    def modifyFunction(self):
+    def modifyFunction(self):   # 修改按钮
         self.save.setEnabled(True)
         self.nameInput.setEnabled(True)
+        self.sexInput.setEnabled(True)
         self.passwordInput.setEnabled(True)
         self.repPasswordInput.setEnabled(True)
         self.deptInput.setEnabled(True)
@@ -1018,6 +1031,7 @@ if __name__ == '__main__':
     user_message = {
         'sno': '1',
         'sname': '1',
+        'sex': '1',
         'dept': '1',
         'majority': '1',
         'max_book': 5

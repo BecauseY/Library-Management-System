@@ -532,7 +532,7 @@ class StudentManage(QWidget):
 
     # 设置表格
     def setTable(self):
-        self.table = QTableWidget(1, 6)
+        self.table = QTableWidget(1, 7)
         self.table.setContentsMargins(10, 10, 10, 10)
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setVisible(False)
@@ -540,18 +540,20 @@ class StudentManage(QWidget):
         self.table.setFocusPolicy(Qt.NoFocus)
 
         self.table.setColumnWidth(2, 150)
-        self.table.setColumnWidth(3, 175)
+        self.table.setColumnWidth(3, 150)
         self.table.setColumnWidth(4, 175)
-        self.table.setColumnWidth(5, 120)
+        self.table.setColumnWidth(5, 175)
+        self.table.setColumnWidth(6, 120)
 
         self.table.setItem(0, 0, QTableWidgetItem('学号'))
         self.table.setItem(0, 1, QTableWidgetItem('姓名'))
-        self.table.setItem(0, 2, QTableWidgetItem('学院'))
-        self.table.setItem(0, 3, QTableWidgetItem('专业'))
-        self.table.setItem(0, 4, QTableWidgetItem('最大借书数'))
-        self.table.setItem(0, 5, QTableWidgetItem('操作'))
+        self.table.setItem(0, 2, QTableWidgetItem('性别'))
+        self.table.setItem(0, 3, QTableWidgetItem('学院'))
+        self.table.setItem(0, 4, QTableWidgetItem('专业'))
+        self.table.setItem(0, 5, QTableWidgetItem('最大借书数'))
+        self.table.setItem(0, 6, QTableWidgetItem('操作'))
 
-        for i in range(6):
+        for i in range(7):
             self.table.item(0, i).setTextAlignment(Qt.AlignCenter)
             self.table.item(0, i).setFont(QFont('微软雅黑', 15))
 
@@ -568,13 +570,16 @@ class StudentManage(QWidget):
         itemNAME = QTableWidgetItem(val[1])
         itemNAME.setTextAlignment(Qt.AlignCenter)
 
-        itemDEPARTMENT = QTableWidgetItem(val[2])
+        itemSEX = QTableWidgetItem(val[2])
+        itemSEX.setTextAlignment(Qt.AlignCenter)
+
+        itemDEPARTMENT = QTableWidgetItem(val[3])
         itemDEPARTMENT.setTextAlignment(Qt.AlignCenter)
 
-        itemMAJOR = QTableWidgetItem(val[3])
+        itemMAJOR = QTableWidgetItem(val[4])
         itemMAJOR.setTextAlignment(Qt.AlignCenter)
 
-        itemMAX = QTableWidgetItem(str(val[4]))
+        itemMAX = QTableWidgetItem(str(val[5]))
         itemMAX.setTextAlignment(Qt.AlignCenter)
 
         itemModify = QToolButton(self.table)
@@ -612,10 +617,11 @@ class StudentManage(QWidget):
         self.table.insertRow(1)
         self.table.setItem(1, 0, itemSID)
         self.table.setItem(1, 1, itemNAME)
-        self.table.setItem(1, 2, itemDEPARTMENT)
-        self.table.setItem(1, 3, itemMAJOR)
-        self.table.setItem(1, 4, itemMAX)
-        self.table.setCellWidget(1, 5, itemWidget)
+        self.table.setItem(1, 2, itemSEX)
+        self.table.setItem(1, 3, itemDEPARTMENT)
+        self.table.setItem(1, 4, itemMAJOR)
+        self.table.setItem(1, 5, itemMAX)
+        self.table.setCellWidget(1, 6, itemWidget)
 
     def updateStudentFunction(self, sno: str):
         stu_info = func.get_student_info(sno)
@@ -774,7 +780,6 @@ class BorrowManage(QWidget):
         self.table.setItem(0, 3, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 5, QTableWidgetItem('罚金'))
-        self.table.setColumnHidden(5, True)
         self.table.setItem(0, 6, QTableWidgetItem('操作'))
 
         for i in range(7):
@@ -991,7 +996,6 @@ class HistoryManage(QWidget):
         self.table.setItem(0, 3, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 5, QTableWidgetItem('罚金'))
-        self.table.setColumnHidden(5, True)
 
         for i in range(6):
             self.table.item(0, i).setTextAlignment(Qt.AlignCenter)

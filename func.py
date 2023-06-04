@@ -9,8 +9,9 @@ CONFIG = {
 }
 
 
+# 登录
 def signin(user_message: dict) -> dict:
-    ans = None
+    ans = None  # 返回值
     try:
         conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], passwd=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
@@ -22,10 +23,10 @@ def signin(user_message: dict) -> dict:
             user_message['ID'],
             user_message['PASSWORD']
         ))
-        temp = cursor.fetchall()
+        temp = cursor.fetchall()   # 从数据库中取出数据
         if len(temp) == 0:
             cursor.execute('''
-            SELECT sno, sname, dept, majority, max_book
+            SELECT sno, sname, sex, dept, majority, max_book
             FROM student
             WHERE sno=%s AND password=%s
             ''', (
@@ -41,7 +42,7 @@ def signin(user_message: dict) -> dict:
     finally:
         if conn:
             conn.close()
-        return convert(ans)
+        return convert(ans)     # 返回转换后的数据
 
 
 # 去掉字符串末尾的0
@@ -58,14 +59,15 @@ def convert(val: list):
     if len(val) == 0:
         return None
     val = val[0]
-    if len(val) == 5:
+    if len(val) == 6:   # 如果是学生
         ans = {
             'class': 'stu',
             'sno': remove_blank(val[0]),
             'sname': remove_blank(val[1]),
-            'dept': remove_blank(val[2]),
-            'majority': remove_blank(val[3]),
-            'max_book': val[4]
+            'sex': remove_blank(val[2]),
+            'dept': remove_blank(val[3]),
+            'majority': remove_blank(val[4]),
+            'max_book': val[5]
         }
     else:
         ans = {
@@ -141,6 +143,7 @@ def signup(user_message: dict) -> bool:
         'SID': str,
         'PASSWORD': str,
         'SNAME': str,
+        'SEX': str,
         'DEPARTMENT': str,
         'MAJOR': str,
         'MAX': int
@@ -160,11 +163,12 @@ def signup(user_message: dict) -> bool:
         cursor.execute('''
         INSERT
         INTO student
-        VALUES(%s, %s, %s, %s, %s, %s)
+        VALUES(%s, %s, %s, %s, %s, %s, %s)
         ''', (
             user_message['sno'],
             user_message['password'],
             user_message['sname'],
+            user_message['sex'],
             user_message['dept'],
             user_message['majority'],
             user_message['max_book']
@@ -188,6 +192,7 @@ def update_student(user_message: dict) -> bool:
         'sno': str,
         'password': str,
         'sname': str,
+        'sex': str,  # '男' or '女'
         'dept': str,
         'majority': str,
         'max_book': int
@@ -200,10 +205,11 @@ def update_student(user_message: dict) -> bool:
         cursor = conn.cursor()
         cursor.execute('''
             UPDATE student
-            SET sname=%s, dept=%s, majority=%s, max_book=%s
+            SET sname=%s, sex=%s, dept=%s, majority=%s, max_book=%s
             WHERE sno=%s
             ''', (
             user_message['sname'],
+            user_message['sex'],
             user_message['dept'],
             user_message['majority'],
             user_message['max_book'],
@@ -237,6 +243,7 @@ def get_student_info(sno: str) -> dict:
         'class': stu,
         'sno': str,
         'sname': str,
+        'sex': str,  # '男' or '女'
         'dept': str,
         'majority': str,
         'max_book': int
@@ -246,7 +253,7 @@ def get_student_info(sno: str) -> dict:
         conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
-            SELECT sno, sname, dept, majority, max_book
+            SELECT sno, sname, sex, dept, majority, max_book
             FROM student
             WHERE sno=%s
             ''', (sno))
@@ -264,7 +271,7 @@ def get_student_info(sno: str) -> dict:
 def search_student(info: str) -> list:
     '''
     传入sno或学生姓名进行查找
-    返回[[sno, sname, dept, majority, max_book],...]
+    返回[[sno, sname, sex, dept, majority, max_book],...]
     '''
     try:
         res = []
@@ -275,7 +282,7 @@ def search_student(info: str) -> list:
         # 显示所有书信息
         if info == 'ID/姓名' or info == '':
             cursor.execute('''
-            SELECT sno, sname, dept, majority, max_book
+            SELECT sno, sname, sex, dept, majority, max_book
             FROM student
             ''')
             res += cursor.fetchall()
@@ -283,7 +290,7 @@ def search_student(info: str) -> list:
             # 按条件查找
             for i in val:
                 cursor.execute('''
-                SELECT sno, sname, dept, majority, max_book
+                SELECT sno, sname, sex, dept, majority, max_book
                 FROM student
                 WHERE sno=%s OR sname LIKE %s
                 ''', i)
