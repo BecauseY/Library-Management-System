@@ -141,6 +141,7 @@ def signup(user_message: dict) -> bool:
         'SID': str,
         'PASSWORD': str,
         'SNAME': str,
+        'SEX': str,
         'DEPARTMENT': str,
         'MAJOR': str,
         'MAX': int
@@ -160,11 +161,12 @@ def signup(user_message: dict) -> bool:
         cursor.execute('''
         INSERT
         INTO student
-        VALUES(%s, %s, %s, %s, %s, %s)
+        VALUES(%s, %s, %s, %s, %s, %s, %s)
         ''', (
             user_message['sno'],
             user_message['password'],
             user_message['sname'],
+            user_message['sex'],
             user_message['dept'],
             user_message['majority'],
             user_message['max_book']
