@@ -774,6 +774,7 @@ class BorrowManage(QWidget):
         self.table.setItem(0, 3, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 5, QTableWidgetItem('罚金'))
+        self.table.setColumnHidden(5, True)
         self.table.setItem(0, 6, QTableWidgetItem('操作'))
 
         for i in range(7):
@@ -990,6 +991,7 @@ class HistoryManage(QWidget):
         self.table.setItem(0, 3, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 5, QTableWidgetItem('罚金'))
+        self.table.setColumnHidden(5, True)
 
         for i in range(6):
             self.table.item(0, i).setTextAlignment(Qt.AlignCenter)

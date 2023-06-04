@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QGridLayout, QGroupBox,
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import Qt, QSize
 import func
+
+
 # import func
 
 
@@ -25,7 +27,7 @@ class StudentPage(QWidget):
         self.setTitleBar()
 
         # 分割
-        self.body = QSplitter(Qt.Vertical,self)
+        self.body = QSplitter(Qt.Vertical, self)
         self.setLeftMunu()
         self.content = None
         self.setContent()
@@ -46,7 +48,7 @@ class StudentPage(QWidget):
 
         self.account = QToolButton()
         self.account.setIcon(QIcon('icon/person.png'))
-        self.account.setText(self.stu_mes['sno']+self.stu_mes['sname']+'，你好！')
+        self.account.setText(self.stu_mes['sno'] + self.stu_mes['sname'] + '，你好！')
         self.account.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.account.setFixedHeight(20)
         self.account.setEnabled(False)
@@ -244,7 +246,7 @@ class Books(QGroupBox):
     # 设置搜索框
     def setSearchBar(self):
         self.selectBox = QComboBox()
-        self.selectBox.addItems(['书号', '分类', '出版社', '作者', '书名'])
+        self.selectBox.addItems(['图书编号ISBN', '分类', '出版社', '作者', '书名'])
         self.selectBox.setFixedHeight(30)
         self.searchTitle = QLabel()
         self.searchTitle.setText('搜索书籍')
@@ -269,8 +271,9 @@ class Books(QGroupBox):
 
     # 搜索方法
     def searchFunction(self):
-        convert = {'书号': 'bno', '分类': 'class', '出版社': 'press', '作者': 'author', '书名': 'bname', '': 'bname'}
-        self.book_list = func.search_book(self.searchInput.text(), convert[self.selectBox.currentText()], self.stu_mes['sno'])
+        convert = {'图书编号ISBN': 'bno', '分类': 'class', '出版社': 'press', '作者': 'author', '书名': 'bname', '': 'bname'}
+        self.book_list = func.search_book(self.searchInput.text(), convert[self.selectBox.currentText()],
+                                          self.stu_mes['sno'])
         if self.book_list == []:
             print('未找到')
         if self.table is not None:
@@ -292,7 +295,7 @@ class Books(QGroupBox):
         # self.table.setColumnWidth(4, 100)
         self.table.setColumnWidth(6, 80)
 
-        self.table.setItem(0, 0, QTableWidgetItem('书号'))
+        self.table.setItem(0, 0, QTableWidgetItem('图书编号ISBN'))
         self.table.setItem(0, 1, QTableWidgetItem('书名'))
         self.table.setItem(0, 2, QTableWidgetItem('作者'))
         self.table.setItem(0, 3, QTableWidgetItem('出版日期'))
@@ -331,7 +334,7 @@ class Books(QGroupBox):
         itemPOSITION = QTableWidgetItem(val[5])
         itemPOSITION.setTextAlignment(Qt.AlignCenter)
 
-        itemSUM = QTableWidgetItem(str(val[6])+'/'+str(val[7]))
+        itemSUM = QTableWidgetItem(str(val[6]) + '/' + str(val[7]))
         itemSUM.setTextAlignment(Qt.AlignCenter)
 
         itemCLASSIFICATION = QTableWidgetItem(val[8])
@@ -485,11 +488,12 @@ class BorrowingBooks(QGroupBox):
         self.table.setColumnWidth(4, 100)
         self.table.setColumnWidth(5, 150)
 
-        self.table.setItem(0, 0, QTableWidgetItem('书号'))
+        self.table.setItem(0, 0, QTableWidgetItem('图书编号ISBN'))
         self.table.setItem(0, 1, QTableWidgetItem('书名'))
         self.table.setItem(0, 2, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 3, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('罚金'))
+        self.table.setColumnHidden(4, True)
         self.table.setItem(0, 5, QTableWidgetItem('操作'))
 
         for i in range(6):
@@ -666,11 +670,12 @@ class History(QGroupBox):
         self.table.setColumnWidth(3, 175)
         self.table.setColumnWidth(4, 100)
 
-        self.table.setItem(0, 0, QTableWidgetItem('书号'))
+        self.table.setItem(0, 0, QTableWidgetItem('图书编号ISBN'))
         self.table.setItem(0, 1, QTableWidgetItem('书名'))
         self.table.setItem(0, 2, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 3, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('罚金'))
+        self.table.setColumnHidden(4, True)
 
         for i in range(5):
             self.table.item(0, i).setTextAlignment(Qt.AlignCenter)
