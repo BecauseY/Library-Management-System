@@ -26,9 +26,9 @@ class BookInfo(QGroupBox):
 
     def __init__(self, book_msg: dict = None):
         super().__init__()
-        if book_msg is not None:
+        if book_msg is not None:    # 如果传入了book_msg, 则使用传入的book_msg
             self.book_msg = book_msg
-        else:
+        else:                       # 否则使用默认的book_msg
             self.book_msg = {
                 'bno': '请输入书号',
                 'bname': '请输入书名',
@@ -39,6 +39,7 @@ class BookInfo(QGroupBox):
                 'sum': '请输入数量',
                 'class': '请输入分类, 以空格区分'
             }
+            #
 
         self.title = QLabel()
         self.title.setText('书本信息')
@@ -51,7 +52,7 @@ class BookInfo(QGroupBox):
         self.bnoInput.setFixedSize(400, 40)
         self.bnoInput.setText(self.book_msg['bno'])
         self.bnoInput.initText = '请输入书号'
-        self.bnoInput.mousepressEvent = lambda x: self.inputClick(self.bnoInput)
+        self.bnoInput.mousepressEvent = lambda x: self.inputClick(self.bnoInput)    # 重写鼠标点击事件
         # bno不允许修改
         if self.bnoInput.text() != self.bnoInput.initText:
             self.bnoInput.setEnabled(False)
@@ -140,10 +141,14 @@ class BookInfo(QGroupBox):
         self.initUI()
 
     def inputClick(self, e):
-        for item in self.btnList:
-            if item.text() == '':
+        for item in self.btnList:   # 重置所有输入框
+            if item.text() == '':   # 如果为空则重置
                 item.setText(item.initText)
-        if e.text() == e.initText:
+            if item is self.bnoInput or item is self.NumInput:
+                item.setEchoMode(QLineEdit.Normal)
+
+
+        if e.text() == e.initText:  # 如果是初始值则清空
             e.setText('')
 
     def submitFunction(self):
