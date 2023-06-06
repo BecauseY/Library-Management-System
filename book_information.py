@@ -37,7 +37,8 @@ class BookInfo(QGroupBox):
                 'press': '请输入出版社',
                 'position': '请输入存放位置',
                 'sum': '请输入数量',
-                'class': '请输入分类, 以空格区分'
+                'class': '请输入分类, 以空格区分',
+                'count': '0'
             }
             #
 
@@ -250,7 +251,8 @@ if __name__ == '__main__':
         'press': '电子出版社',
         'position': 'C05',
         'sum': 5,
-        'class': 'aasd asd asd ad '
+        'class': 'aasd asd asd ad ',
+        'count': 0
     }
     app = QApplication(sys.argv)
     ex = BookInfo(book_msg)

@@ -23,7 +23,7 @@ def signin(user_message: dict) -> dict:
             user_message['ID'],
             user_message['PASSWORD']
         ))
-        temp = cursor.fetchall()   # 从数据库中取出数据
+        temp = cursor.fetchall()  # 从数据库中取出数据
         if len(temp) == 0:
             cursor.execute('''
             SELECT sno, sname, sex, dept, majority, max_book
@@ -42,7 +42,7 @@ def signin(user_message: dict) -> dict:
     finally:
         if conn:
             conn.close()
-        return convert(ans)     # 返回转换后的数据
+        return convert(ans)  # 返回转换后的数据
 
 
 # 去掉字符串末尾的0
@@ -59,7 +59,7 @@ def convert(val: list):
     if len(val) == 0:
         return None
     val = val[0]
-    if len(val) == 6:   # 如果是学生
+    if len(val) == 6:  # 如果是学生
         ans = {
             'class': 'stu',
             'sno': remove_blank(val[0]),
@@ -557,7 +557,7 @@ def new_book(book_info: dict) -> bool:
         cursor.execute('''
         INSERT
         INTO book
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, 0)
         ''', (
             book_info['bno'],
             book_info['bname'],
@@ -566,7 +566,8 @@ def new_book(book_info: dict) -> bool:
             book_info['press'],
             book_info['position'],
             str(book_info['sum']),
-            str(book_info['sum'])
+            str(book_info['sum']),
+            book_info['count']
         ))
 
         # 处理书本分类
