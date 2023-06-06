@@ -490,6 +490,8 @@ class BorrowingBooks(QGroupBox):
         self.table.setItem(0, 2, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 3, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('罚金'))
+        # 隐藏罚金
+        self.table.setColumnHidden(4, True)
         self.table.setItem(0, 5, QTableWidgetItem('操作'))
 
         for i in range(6):
@@ -671,6 +673,8 @@ class History(QGroupBox):
         self.table.setItem(0, 2, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 3, QTableWidgetItem('还书日期'))
         self.table.setItem(0, 4, QTableWidgetItem('罚金'))
+        # 隐藏罚金
+        self.table.setColumnHidden(4, True)
 
         for i in range(5):
             self.table.item(0, i).setTextAlignment(Qt.AlignCenter)
