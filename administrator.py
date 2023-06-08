@@ -1,6 +1,7 @@
 import sys
 import time
 import os
+import pymysql
 from PyQt5.QtWidgets import (QApplication, QWidget, QGridLayout, QGroupBox,
                              QToolButton, QSplitter, QVBoxLayout, QHBoxLayout,
                              QLabel, QTableWidget, QTableWidgetItem, QAbstractItemView,
@@ -10,6 +11,13 @@ from PyQt5.QtCore import Qt, QSize
 import func
 import student_information
 import book_information
+
+CONFIG = {
+    "host": 'localhost',
+    "user": 'root',
+    "pwd": '1234',
+    'db': 'library3'
+}
 
 
 class AdministratorPage(QWidget):
@@ -26,7 +34,7 @@ class AdministratorPage(QWidget):
         self.setTitleBar()
 
         # 分割
-        self.body = QSplitter(Qt.Vertical,self)
+        self.body = QSplitter(Qt.Vertical, self)
         self.setLeftMunu()
         self.content = None
         self.setContent()
@@ -47,7 +55,7 @@ class AdministratorPage(QWidget):
 
         self.account = QToolButton()
         self.account.setIcon(QIcon('icon/person.png'))
-        self.account.setText('管理员用户：'+ self.info['aid'])
+        self.account.setText('管理员用户：' + self.info['aid'])
         self.account.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.account.setFixedHeight(30)
         self.account.setEnabled(False)
@@ -91,8 +99,6 @@ class AdministratorPage(QWidget):
         self.history.setIconSize(QSize(30, 30))
         self.history.clicked.connect(lambda: self.switch(2, self.history))
         self.history.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-
 
         self.btnList = [self.bookManage,
                         self.userManage, self.history]
@@ -288,8 +294,8 @@ class BookManage(QGroupBox):
         self.table.setItem(0, 2, QTableWidgetItem('作者'))
         self.table.setItem(0, 3, QTableWidgetItem('出版日期'))
         self.table.setItem(0, 4, QTableWidgetItem('出版社'))
-        self.table.setItem(0, 5, QTableWidgetItem('分类'))
-        self.table.setColumnHidden(5, True)
+        self.table.setItem(0, 5, QTableWidgetItem('借还次数'))
+        # self.table.setColumnHidden(5, True)
         self.table.setItem(0, 6, QTableWidgetItem('位置'))
         self.table.setItem(0, 7, QTableWidgetItem('总数/剩余'))
         self.table.setItem(0, 8, QTableWidgetItem('操作'))
@@ -304,8 +310,8 @@ class BookManage(QGroupBox):
         self.body.addWidget(self.table)
 
     # 插入行
-    def insertRow(self, val: list):      # val = [bno, bname, author, date, press, position, sum, left, class]
-        itemBID = QTableWidgetItem(val[0]) # 书号
+    def insertRow(self, val: list):
+        itemBID = QTableWidgetItem(val[0])
         itemBID.setTextAlignment(Qt.AlignCenter)
 
         itemNAME = QTableWidgetItem('《' + val[1] + '》')
@@ -323,10 +329,24 @@ class BookManage(QGroupBox):
         itemPOSITION = QTableWidgetItem(val[5])
         itemPOSITION.setTextAlignment(Qt.AlignCenter)
 
-        itemSUM = QTableWidgetItem(str(val[6])+'/'+str(val[7]))
+        itemSUM = QTableWidgetItem(str(val[6]) + '/' + str(val[7]))
         itemSUM.setTextAlignment(Qt.AlignCenter)
 
-        itemCLASSIFICATION = QTableWidgetItem(val[8])
+        # 借还次数
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'],
+                               database=CONFIG['db'])
+        cursor = conn.cursor()
+        # 获取book表内的书本信息
+        cursor.execute('''
+               SELECT *
+               FROM book
+               WHERE bno=%s
+               ''', val[0])
+        temp = list(cursor.fetchall())
+        count = list(temp[0])
+        count = str(count[8])
+        itemCLASSIFICATION = QTableWidgetItem(count)
+
         itemCLASSIFICATION.setTextAlignment(Qt.AlignCenter)
 
         itemModify = QToolButton(self.table)

@@ -4,7 +4,7 @@ import pymysql
 Config = {
     "host": 'localhost',
     "user": 'root',
-    "pwd": '123456'
+    "pwd": '1234'
 }
 
 

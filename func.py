@@ -4,7 +4,7 @@ import time
 CONFIG = {
     "host": 'localhost',
     "user": 'root',
-    "pwd": '123456',
+    "pwd": '1234',
     'db': 'library3'
 }
 
