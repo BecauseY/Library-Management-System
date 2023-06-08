@@ -310,8 +310,8 @@ class BookManage(QGroupBox):
         self.body.addWidget(self.table)
 
     # 插入行
-    def insertRow(self, val: list):  # val = [bno, bname, author, date, press, position, sum, left, class]
-        itemBID = QTableWidgetItem(val[0])  # 书号
+    def insertRow(self, val: list):
+        itemBID = QTableWidgetItem(val[0])
         itemBID.setTextAlignment(Qt.AlignCenter)
 
         itemNAME = QTableWidgetItem('《' + val[1] + '》')
