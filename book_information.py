@@ -178,7 +178,7 @@ class BookInfo(QGroupBox):
             self.errorBox('出版社名称长度不能超过20')
             return
         po = self.book_msg['position']
-        if not (len(po) == 3 and po[0].isalpha and po[1:].isdigit()):
+        if not (len(po) <= 10 and po[0].isalpha and po[1:].isdigit()):
             self.errorBox('位置编号不合法')
             return
         if self.book_msg['sum'].isdigit():
