@@ -557,7 +557,7 @@ def new_book(book_info: dict) -> bool:
         cursor.execute('''
         INSERT
         INTO book
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, 0)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
         ''', (
             book_info['bno'],
             book_info['bname'],
@@ -634,9 +634,9 @@ def get_book_info(bno: str) -> dict:
         # 把列表转换为字典
         res = list(res[0])
         res.append(classification)
-        key_list = ['bno', 'bname', 'author', 'date', 'press', 'position', 'sum', 'rest', 'class']
+        key_list = ['bno', 'bname', 'author', 'date', 'press', 'position', 'sum', 'rest', 'class', 'count']
         ans = {}
-        for i, key in zip(res, key_list):
+        for (i, key) in zip(res, key_list):
             ans[key] = i
             if type(i) is str:
                 ans[key] = remove_blank(i)

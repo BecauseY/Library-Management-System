@@ -289,6 +289,7 @@ class BookManage(QGroupBox):
         self.table.setItem(0, 3, QTableWidgetItem('出版日期'))
         self.table.setItem(0, 4, QTableWidgetItem('出版社'))
         self.table.setItem(0, 5, QTableWidgetItem('分类'))
+        self.table.setColumnHidden(5, True)
         self.table.setItem(0, 6, QTableWidgetItem('位置'))
         self.table.setItem(0, 7, QTableWidgetItem('总数/剩余'))
         self.table.setItem(0, 8, QTableWidgetItem('操作'))
@@ -331,6 +332,7 @@ class BookManage(QGroupBox):
         itemModify = QToolButton(self.table)
         itemModify.setFixedSize(50, 25)
         itemModify.setText('修改')
+        itemModify.setVisible(False)
         itemModify.clicked.connect(lambda: self.updateBookFunction(val[0]))
         itemModify.setStyleSheet('''
         *{
