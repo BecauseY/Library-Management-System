@@ -47,11 +47,11 @@ def signin(user_message: dict) -> dict:
 
 # 去掉字符串末尾的0
 def remove_blank(val):
-    if type(val) is not str:
+    if type(val) is not str:               # 如果不是字符串，直接返回
         return val
-    while len(val) != 0 and val[-1] == ' ':
-        val = val[:-1]
-    return val
+    while len(val) != 0 and val[-1] == ' ':  # 如果末尾是空格
+        val = val[:-1]                      # 去掉末尾的一个字符
+    return val                             # 返回去掉空格后的字符串
 
 
 # 将元组列表转换为字典
@@ -759,7 +759,7 @@ def delete_book(bno: str) -> bool:
 
 
 # 把book元组转换为list
-def tuple_to_list(val: list):
+def tuple_to_list(val: list): # val是一个tuple的列表
     '''
     传入tuple列表把里面的tuple都转换为list同时去掉字符串里的空格
     '''
@@ -788,14 +788,14 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
         # 显示所有书信息
         if info == 'ID/书名/作者/出版社' or info == '':
             cursor.execute('''
-            SELECT *
+            SELECT bno, bname, author, date, press, position, sum, rest
             FROM book
             ''')
             res = tuple_to_list(cursor.fetchall())
         elif restrict != 'bno' and restrict != 'class':
             # AUTHOR或PRESS或BNAME
             cursor.execute(f'''
-            SELECT *
+            SELECT bno, bname, author, date, press, position, sum, rest
             FROM book
             WHERE {restrict} LIKE %s
             ''', ('%' + info + '%'))
@@ -803,7 +803,7 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
         elif restrict == 'bno':
             # bno
             cursor.execute('''
-            SELECT *
+            SELECT bno, bname, author, date, press, position, sum, rest
             FROM book
             WHERE bno = %s
             ''', (info))
@@ -817,7 +817,7 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
             ''', (info))
             for bno in cursor.fetchall():
                 cursor.execute('''
-                SELECT *
+                SELECT bno, bname, author, date, press, position, sum, rest
                 FROM book
                 WHERE bno = %s
                 ''', (bno[0]))
@@ -852,16 +852,21 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
                 if i[4] < time.strftime("%Y-%m-%d-%H:%M"):
                     punish = True
                     break
-            for book in res:
+            for book in res:  # 遍历每一本书
                 # 有罚金没交
                 if punish:
-                    book.append('未交罚金')
+                    book.append('未交罚金')  # 未交罚金
                     continue
                 # 如果已经借的书达到上限就不再可借
-                if len(borrowing_book) >= max_num:
+                if len(borrowing_book) >= max_num:  # 借书达上限
                     book.append('借书达上限')
                     continue
-                if book[-2] == 0:
+                    # book[-3]为分类
+                    # book[-2]为剩余数量
+                    # book[-1]为状态
+                    # book[0]为bno
+
+                if book[-2] == 0:  # 剩余为0
                     book.append('没有剩余')
                     continue
                 # 判断是否有此书
@@ -915,7 +920,7 @@ def borrow_book(bno: str, sno: str) -> bool:
         ''', (bno))
         book_mes = cursor.fetchall()
         # print(book_mes)
-        rest = book_mes[0][0]
+        rest = book_mes[0][0]   # book_mes[0][0]
         borrow_date = time.strftime("%Y-%m-%d-%H:%M")
         deadline = postpone(borrow_date)
 
@@ -923,7 +928,7 @@ def borrow_book(bno: str, sno: str) -> bool:
         cursor.execute('''
         UPDATE book
         SET rest=%s
-        WHERE bno=%s''', (str(rest - 1), bno))
+        WHERE bno=%s''', (str(rest), bno))
         conn.commit()
 
         cursor.execute('''

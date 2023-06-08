@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QGridLayout, QGroupBox,
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import Qt, QSize
 import func
+
+
 # import func
 
 
@@ -25,7 +27,7 @@ class StudentPage(QWidget):
         self.setTitleBar()
 
         # 分割
-        self.body = QSplitter(Qt.Vertical,self)
+        self.body = QSplitter(Qt.Vertical, self)
         self.setLeftMunu()
         self.content = None
         self.setContent()
@@ -46,7 +48,7 @@ class StudentPage(QWidget):
 
         self.account = QToolButton()
         self.account.setIcon(QIcon('icon/person.png'))
-        self.account.setText(self.stu_mes['sno']+self.stu_mes['sname']+'，你好！')
+        self.account.setText(self.stu_mes['sno'] + self.stu_mes['sname'] + '，你好！')
         self.account.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.account.setFixedHeight(20)
         self.account.setEnabled(False)
@@ -123,7 +125,7 @@ class StudentPage(QWidget):
         self.menu.setContentsMargins(0, 0, 0, 0)
         self.body.addWidget(self.menu)
 
-    def switch(self, index, btn):   # 切换页面,index为页面编号
+    def switch(self, index, btn):  # 切换页面,index为页面编号
         self.focus = index
         for i in self.btnList:
             i.setStyleSheet('''
@@ -156,7 +158,7 @@ class StudentPage(QWidget):
             self.content = Detial(self.stu_mes)
         self.body.addWidget(self.content)
 
-    def setMyStyle(self): # 设置样式
+    def setMyStyle(self):  # 设置样式
         self.setStyleSheet('''
         QWidget{
             background-color: white;
@@ -270,7 +272,8 @@ class Books(QGroupBox):
     # 搜索方法
     def searchFunction(self):
         convert = {'书号': 'bno', '分类': 'class', '出版社': 'press', '作者': 'author', '书名': 'bname', '': 'bname'}
-        self.book_list = func.search_book(self.searchInput.text(), convert[self.selectBox.currentText()], self.stu_mes['sno'])
+        self.book_list = func.search_book(self.searchInput.text(), convert[self.selectBox.currentText()],
+                                          self.stu_mes['sno'])
         if self.book_list == []:
             print('未找到')
         if self.table is not None:
@@ -312,7 +315,7 @@ class Books(QGroupBox):
         self.body.addWidget(self.table)
 
     # 插入行
-    def insertRow(self, val: list):
+    def insertRow(self, val: list):  # val = [bno, bname, author, date, press, position, sum, rest, class]
         itemBID = QTableWidgetItem(val[0])
         itemBID.setTextAlignment(Qt.AlignCenter)
 
@@ -331,7 +334,7 @@ class Books(QGroupBox):
         itemPOSITION = QTableWidgetItem(val[5])
         itemPOSITION.setTextAlignment(Qt.AlignCenter)
 
-        itemSUM = QTableWidgetItem(str(val[6])+'/'+str(val[7]))
+        itemSUM = QTableWidgetItem(str(val[6]) + '/' + str(val[7]))
         itemSUM.setTextAlignment(Qt.AlignCenter)
 
         itemCLASSIFICATION = QTableWidgetItem(val[8])
@@ -339,7 +342,13 @@ class Books(QGroupBox):
 
         itemOPERATE = QToolButton(self.table)
         itemOPERATE.setFixedSize(70, 25)
-        if val[-1] == '借书':
+
+        # val[-3]为总数量
+        # val[-2]为剩余数量
+        # val[-1]为借阅状态
+        # val[0]为为书号
+
+        if val[-1] == '借书':  # 可借
             itemOPERATE.setText('借书')
             itemOPERATE.clicked.connect(lambda: self.borrowBook(val[0]))
             itemOPERATE.setStyleSheet('''
@@ -353,9 +362,9 @@ class Books(QGroupBox):
             }
             ''')
         else:
-            itemOPERATE.setText('不可借')
+            itemOPERATE.setText('不可借')  # 不可借
             itemOPERATE.setEnabled(False)
-            itemOPERATE.setToolTip(val[-1])
+            itemOPERATE.setToolTip(val[-1])  # 设置提示
             QToolTip.setFont(QFont('微软雅黑', 15))
             itemOPERATE.setStyleSheet('''
             QToolButton{
@@ -934,7 +943,7 @@ class Detial(QWidget):
         self.setLayout(self.bodyLayout)
         self.initUI()
 
-    def saveFunction(self): # 保存
+    def saveFunction(self):  # 保存
         if self.passwordInput.text() != self.repPasswordInput.text():
             print('密码不一致')
             return
@@ -961,7 +970,7 @@ class Detial(QWidget):
         self.maxNumInput.setEnabled(False)
         self.setMyStyle()
 
-    def modifyFunction(self):   # 修改按钮
+    def modifyFunction(self):  # 修改按钮
         self.save.setEnabled(True)
         self.nameInput.setEnabled(True)
         self.sexInput.setEnabled(True)
