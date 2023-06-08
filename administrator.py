@@ -12,10 +12,17 @@ import func
 import student_information
 import book_information
 
+
+# 读入配置文件
+# 打开config.txt文件
+# with open('config.txt', 'r') as f:
+#     config = eval(f.read())     #eval()函数将字符串转化为字典
+#     f.close()
+
 CONFIG = {
     "host": 'localhost',
     "user": 'root',
-    "pwd": '1234',
+    "pwd": '123456',
     'db': 'library3'
 }
 
