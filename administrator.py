@@ -12,19 +12,10 @@ import func
 import student_information
 import book_information
 
-
-# 读入配置文件
-# 打开config.txt文件
-# with open('config.txt', 'r') as f:
-#     config = eval(f.read())     #eval()函数将字符串转化为字典
-#     f.close()
-
-CONFIG = {
-    "host": 'localhost',
-    "user": 'root',
-    "pwd": '123456',
-    'db': 'library3'
-}
+# 读取配置文件
+with open('config.txt', 'r') as f:
+    config = eval(f.read())
+    f.close()
 
 
 class AdministratorPage(QWidget):
@@ -340,8 +331,8 @@ class BookManage(QGroupBox):
         itemSUM.setTextAlignment(Qt.AlignCenter)
 
         # 借还次数
-        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'],
-                               database=CONFIG['db'])
+        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'],
+                               database=config['db'])
         cursor = conn.cursor()
         # 获取book表内的书本信息
         cursor.execute('''
