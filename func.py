@@ -4,13 +4,14 @@ import time
 CONFIG = {
     "host": 'localhost',
     "user": 'root',
-    "pwd": '123456',
+    "pwd": '1234',
     'db': 'library3'
 }
 
 
+# 登录
 def signin(user_message: dict) -> dict:
-    ans = None
+    ans = None  # 返回值
     try:
         conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], passwd=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
@@ -22,10 +23,10 @@ def signin(user_message: dict) -> dict:
             user_message['ID'],
             user_message['PASSWORD']
         ))
-        temp = cursor.fetchall()
+        temp = cursor.fetchall()  # 从数据库中取出数据
         if len(temp) == 0:
             cursor.execute('''
-            SELECT sno, sname, dept, majority, max_book
+            SELECT sno, sname, sex, dept, majority, max_book
             FROM student
             WHERE sno=%s AND password=%s
             ''', (
@@ -41,16 +42,16 @@ def signin(user_message: dict) -> dict:
     finally:
         if conn:
             conn.close()
-        return convert(ans)
+        return convert(ans)  # 返回转换后的数据
 
 
 # 去掉字符串末尾的0
 def remove_blank(val):
-    if type(val) is not str:
+    if type(val) is not str:               # 如果不是字符串，直接返回
         return val
-    while len(val) != 0 and val[-1] == ' ':
-        val = val[:-1]
-    return val
+    while len(val) != 0 and val[-1] == ' ':  # 如果末尾是空格
+        val = val[:-1]                      # 去掉末尾的一个字符
+    return val                             # 返回去掉空格后的字符串
 
 
 # 将元组列表转换为字典
@@ -58,14 +59,15 @@ def convert(val: list):
     if len(val) == 0:
         return None
     val = val[0]
-    if len(val) == 5:
+    if len(val) == 6:  # 如果是学生
         ans = {
             'class': 'stu',
             'sno': remove_blank(val[0]),
             'sname': remove_blank(val[1]),
-            'dept': remove_blank(val[2]),
-            'majority': remove_blank(val[3]),
-            'max_book': val[4]
+            'sex': remove_blank(val[2]),
+            'dept': remove_blank(val[3]),
+            'majority': remove_blank(val[4]),
+            'max_book': val[5]
         }
     else:
         ans = {
@@ -190,6 +192,7 @@ def update_student(user_message: dict) -> bool:
         'sno': str,
         'password': str,
         'sname': str,
+        'sex': str,  # '男' or '女'
         'dept': str,
         'majority': str,
         'max_book': int
@@ -202,10 +205,11 @@ def update_student(user_message: dict) -> bool:
         cursor = conn.cursor()
         cursor.execute('''
             UPDATE student
-            SET sname=%s, dept=%s, majority=%s, max_book=%s
+            SET sname=%s, sex=%s, dept=%s, majority=%s, max_book=%s
             WHERE sno=%s
             ''', (
             user_message['sname'],
+            user_message['sex'],
             user_message['dept'],
             user_message['majority'],
             user_message['max_book'],
@@ -239,6 +243,7 @@ def get_student_info(sno: str) -> dict:
         'class': stu,
         'sno': str,
         'sname': str,
+        'sex': str,  # '男' or '女'
         'dept': str,
         'majority': str,
         'max_book': int
@@ -248,7 +253,7 @@ def get_student_info(sno: str) -> dict:
         conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
-            SELECT sno, sname, dept, majority, max_book
+            SELECT sno, sname, sex, dept, majority, max_book
             FROM student
             WHERE sno=%s
             ''', (sno))
@@ -266,7 +271,7 @@ def get_student_info(sno: str) -> dict:
 def search_student(info: str) -> list:
     '''
     传入sno或学生姓名进行查找
-    返回[[sno, sname, dept, majority, max_book],...]
+    返回[[sno, sname, sex, dept, majority, max_book],...]
     '''
     try:
         res = []
@@ -277,7 +282,7 @@ def search_student(info: str) -> list:
         # 显示所有书信息
         if info == 'ID/姓名' or info == '':
             cursor.execute('''
-            SELECT sno, sname, dept, majority, max_book
+            SELECT sno, sname, sex, dept, majority, max_book
             FROM student
             ''')
             res += cursor.fetchall()
@@ -285,7 +290,7 @@ def search_student(info: str) -> list:
             # 按条件查找
             for i in val:
                 cursor.execute('''
-                SELECT sno, sname, dept, majority, max_book
+                SELECT sno, sname, sex, dept, majority, max_book
                 FROM student
                 WHERE sno=%s OR sname LIKE %s
                 ''', i)
@@ -552,7 +557,7 @@ def new_book(book_info: dict) -> bool:
         cursor.execute('''
         INSERT
         INTO book
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
         ''', (
             book_info['bno'],
             book_info['bname'],
@@ -561,7 +566,8 @@ def new_book(book_info: dict) -> bool:
             book_info['press'],
             book_info['position'],
             str(book_info['sum']),
-            str(book_info['sum'])
+            str(book_info['sum']),
+            book_info['count']
         ))
 
         # 处理书本分类
@@ -628,9 +634,9 @@ def get_book_info(bno: str) -> dict:
         # 把列表转换为字典
         res = list(res[0])
         res.append(classification)
-        key_list = ['bno', 'bname', 'author', 'date', 'press', 'position', 'sum', 'rest', 'class']
+        key_list = ['bno', 'bname', 'author', 'date', 'press', 'position', 'sum', 'rest', 'class', 'count']
         ans = {}
-        for i, key in zip(res, key_list):
+        for (i, key) in zip(res, key_list):
             ans[key] = i
             if type(i) is str:
                 ans[key] = remove_blank(i)
@@ -753,7 +759,7 @@ def delete_book(bno: str) -> bool:
 
 
 # 把book元组转换为list
-def tuple_to_list(val: list):
+def tuple_to_list(val: list): # val是一个tuple的列表
     '''
     传入tuple列表把里面的tuple都转换为list同时去掉字符串里的空格
     '''
@@ -782,14 +788,14 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
         # 显示所有书信息
         if info == 'ID/书名/作者/出版社' or info == '':
             cursor.execute('''
-            SELECT *
+            SELECT bno, bname, author, date, press, position, sum, rest
             FROM book
             ''')
             res = tuple_to_list(cursor.fetchall())
         elif restrict != 'bno' and restrict != 'class':
             # AUTHOR或PRESS或BNAME
             cursor.execute(f'''
-            SELECT *
+            SELECT bno, bname, author, date, press, position, sum, rest
             FROM book
             WHERE {restrict} LIKE %s
             ''', ('%' + info + '%'))
@@ -797,7 +803,7 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
         elif restrict == 'bno':
             # bno
             cursor.execute('''
-            SELECT *
+            SELECT bno, bname, author, date, press, position, sum, rest
             FROM book
             WHERE bno = %s
             ''', (info))
@@ -811,7 +817,7 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
             ''', (info))
             for bno in cursor.fetchall():
                 cursor.execute('''
-                SELECT *
+                SELECT bno, bname, author, date, press, position, sum, rest
                 FROM book
                 WHERE bno = %s
                 ''', (bno[0]))
@@ -846,16 +852,21 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
                 if i[4] < time.strftime("%Y-%m-%d-%H:%M"):
                     punish = True
                     break
-            for book in res:
+            for book in res:  # 遍历每一本书
                 # 有罚金没交
                 if punish:
-                    book.append('未交罚金')
+                    book.append('未交罚金')  # 未交罚金
                     continue
                 # 如果已经借的书达到上限就不再可借
-                if len(borrowing_book) >= max_num:
+                if len(borrowing_book) >= max_num:  # 借书达上限
                     book.append('借书达上限')
                     continue
-                if book[-2] == 0:
+                    # book[-3]为分类
+                    # book[-2]为剩余数量
+                    # book[-1]为状态
+                    # book[0]为bno
+
+                if book[-2] == 0:  # 剩余为0
                     book.append('没有剩余')
                     continue
                 # 判断是否有此书
@@ -909,7 +920,7 @@ def borrow_book(bno: str, sno: str) -> bool:
         ''', (bno))
         book_mes = cursor.fetchall()
         # print(book_mes)
-        rest = book_mes[0][0]
+        rest = book_mes[0][0]   # book_mes[0][0]
         borrow_date = time.strftime("%Y-%m-%d-%H:%M")
         deadline = postpone(borrow_date)
 
@@ -917,7 +928,7 @@ def borrow_book(bno: str, sno: str) -> bool:
         cursor.execute('''
         UPDATE book
         SET rest=%s
-        WHERE bno=%s''', (str(rest - 1), bno))
+        WHERE bno=%s''', (str(rest), bno))
         conn.commit()
 
         cursor.execute('''
