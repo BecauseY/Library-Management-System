@@ -1,6 +1,7 @@
 import pymysql
 import time
 
+
 # 读取配置文件
 with open('config.txt', 'r') as f:
     config = eval(f.read())
@@ -45,11 +46,11 @@ def signin(user_message: dict) -> dict:
 
 # 去掉字符串末尾的0
 def remove_blank(val):
-    if type(val) is not str:  # 如果不是字符串，直接返回
+    if type(val) is not str:               # 如果不是字符串，直接返回
         return val
     while len(val) != 0 and val[-1] == ' ':  # 如果末尾是空格
-        val = val[:-1]  # 去掉末尾的一个字符
-    return val  # 返回去掉空格后的字符串
+        val = val[:-1]                      # 去掉末尾的一个字符
+    return val                             # 返回去掉空格后的字符串
 
 
 # 将元组列表转换为字典
@@ -277,19 +278,19 @@ def search_student(info: str) -> list:
         val = [(i, '%' + i + '%') for i in val]
         conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
         cursor = conn.cursor()
-        # 显示所有书信息
+        # 显示所有学生信息
         if info == 'ID/姓名' or info == '':
             cursor.execute('''
-            SELECT sno, sname, sex, dept, majority, max_book
-            FROM student
+            SELECT *
+            FROM allstudent
             ''')
             res += cursor.fetchall()
         else:
             # 按条件查找
             for i in val:
                 cursor.execute('''
-                SELECT sno, sname, sex, dept, majority, max_book
-                FROM student
+                SELECT *
+                FROM allstudent
                 WHERE sno=%s OR sname LIKE %s
                 ''', i)
                 res += cursor.fetchall()
@@ -786,23 +787,23 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
         # 显示所有书信息
         if info == 'ID/书名/作者/出版社' or info == '':
             cursor.execute('''
-            SELECT bno, bname, author, date, press, position, sum, rest
-            FROM book
+            SELECT *
+            FROM allbook
             ''')
             res = tuple_to_list(cursor.fetchall())
         elif restrict != 'bno' and restrict != 'class':
             # AUTHOR或PRESS或BNAME
             cursor.execute(f'''
-            SELECT bno, bname, author, date, press, position, sum, rest
-            FROM book
+            SELECT *
+            FROM allbook
             WHERE {restrict} LIKE %s
             ''', ('%' + info + '%'))
             res = tuple_to_list(cursor.fetchall())
         elif restrict == 'bno':
             # bno
             cursor.execute('''
-            SELECT bno, bname, author, date, press, position, sum, rest
-            FROM book
+            SELECT *
+            FROM allbook
             WHERE bno = %s
             ''', (info))
             res = tuple_to_list(cursor.fetchall())
@@ -918,7 +919,7 @@ def borrow_book(bno: str, sno: str) -> bool:
         ''', (bno))
         book_mes = cursor.fetchall()
         # print(book_mes)
-        rest = book_mes[0][0]  # book_mes[0][0]
+        rest = book_mes[0][0]   # book_mes[0][0]
         borrow_date = time.strftime("%Y-%m-%d-%H:%M")
         deadline = postpone(borrow_date)
 

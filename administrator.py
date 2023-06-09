@@ -18,6 +18,20 @@ with open('config.txt', 'r') as f:
     f.close()
 
 
+# 读入配置文件
+# 打开config.txt文件
+# with open('config.txt', 'r') as f:
+#     config = eval(f.read())     #eval()函数将字符串转化为字典
+#     f.close()
+
+CONFIG = {
+    "host": 'localhost',
+    "user": 'root',
+    "pwd": '1234',
+    'db': 'library3'
+}
+
+
 class AdministratorPage(QWidget):
     def __init__(self, info):
         super().__init__()
@@ -234,7 +248,7 @@ class BookManage(QGroupBox):
     # 设置搜索框
     def setSearchBar(self):
         self.selectBox = QComboBox()
-        self.selectBox.addItems(['书号', '分类', '出版社', '作者', '书名'])
+        self.selectBox.addItems(['书号', '出版社', '作者', '书名'])
         self.selectBox.setFixedHeight(30)
         self.searchTitle = QLabel()
         self.searchTitle.setText('搜索书籍')

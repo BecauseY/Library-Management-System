@@ -246,7 +246,7 @@ class Books(QGroupBox):
     # 设置搜索框
     def setSearchBar(self):
         self.selectBox = QComboBox()
-        self.selectBox.addItems(['书号', '分类', '出版社', '作者', '书名'])
+        self.selectBox.addItems(['书号', '出版社', '作者', '书名'])
         self.selectBox.setFixedHeight(30)
         self.searchTitle = QLabel()
         self.searchTitle.setText('搜索书籍')
@@ -499,6 +499,7 @@ class BorrowingBooks(QGroupBox):
         self.table.setItem(0, 1, QTableWidgetItem('书名'))
         self.table.setItem(0, 2, QTableWidgetItem('借书日期'))
         self.table.setItem(0, 3, QTableWidgetItem('还书日期'))
+        self.table.setColumnHidden(3, True)
         self.table.setItem(0, 4, QTableWidgetItem('罚金'))
         # 隐藏罚金
         self.table.setColumnHidden(4, True)

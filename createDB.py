@@ -1,6 +1,7 @@
 import time
 import pymysql
 
+
 # 读取配置文件
 with open('config.txt', 'r') as f:
     config = eval(f.read())
@@ -80,6 +81,22 @@ def create_database():
         INTO administrator
         VALUES('admin', '123456')
         """)
+
+        # 显示所有书信息
+        cursor.execute("""
+        CREATE VIEW allbook as
+                SELECT bno, bname, author, date, press, position, sum, rest
+                FROM book
+              """)
+        # 显示所有学生信息
+        cursor.execute("""
+            CREATE VIEW allstudent as
+                SELECT sno, sname, sex, dept, majority, max_book
+                FROM  student
+                    """)
+
+
+
         conn.commit()
     except Exception as e:
         print('Init fall')
