@@ -1,17 +1,19 @@
 import pymysql
 import time
 
-# 读取配置文件
-with open('config.txt', 'r') as f:
-    config = eval(f.read())
-    f.close()
+CONFIG = {
+    "host": 'localhost',
+    "user": 'root',
+    "pwd": '1234',
+    'db': 'library3'
+}
 
 
 # 登录
 def signin(user_message: dict) -> dict:
     ans = None  # 返回值
     try:
-        conn = pymysql.connect(host=config['host'], user=config['user'], passwd=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], passwd=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
         SELECT aid
@@ -45,11 +47,11 @@ def signin(user_message: dict) -> dict:
 
 # 去掉字符串末尾的0
 def remove_blank(val):
-    if type(val) is not str:  # 如果不是字符串，直接返回
+    if type(val) is not str:               # 如果不是字符串，直接返回
         return val
     while len(val) != 0 and val[-1] == ' ':  # 如果末尾是空格
-        val = val[:-1]  # 去掉末尾的一个字符
-    return val  # 返回去掉空格后的字符串
+        val = val[:-1]                      # 去掉末尾的一个字符
+    return val                             # 返回去掉空格后的字符串
 
 
 # 将元组列表转换为字典
@@ -149,7 +151,7 @@ def signup(user_message: dict) -> bool:
     '''
     res = True
     try:
-        conn = pymysql.connect(host=config['host'], user=config['user'], passwd=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], passwd=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
             SELECT *
@@ -199,7 +201,7 @@ def update_student(user_message: dict) -> bool:
     '''
     try:
         res = True
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
             UPDATE student
@@ -248,7 +250,7 @@ def get_student_info(sno: str) -> dict:
     }
     '''
     try:
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
             SELECT sno, sname, sex, dept, majority, max_book
@@ -275,21 +277,21 @@ def search_student(info: str) -> list:
         res = []
         val = info.split()
         val = [(i, '%' + i + '%') for i in val]
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
-        # 显示所有书信息
+        # 显示所有学生信息
         if info == 'ID/姓名' or info == '':
             cursor.execute('''
-            SELECT sno, sname, sex, dept, majority, max_book
-            FROM student
+            SELECT *
+            FROM allstudent
             ''')
             res += cursor.fetchall()
         else:
             # 按条件查找
             for i in val:
                 cursor.execute('''
-                SELECT sno, sname, sex, dept, majority, max_book
-                FROM student
+                SELECT *
+                FROM allstudent
                 WHERE sno=%s OR sname LIKE %s
                 ''', i)
                 res += cursor.fetchall()
@@ -321,7 +323,7 @@ def delete_student(sno: str) -> bool:
     '''
     try:
         res = True
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         # 先强制把书还掉
         cursor.execute('''
@@ -362,7 +364,7 @@ def get_borrowing_books(ID: str, bno: bool = False) -> list:
     [[sno, bno, bname, borrow_date, deadline, punish_money, rest],[...],....]
     '''
     try:
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         if ID == '' or ID == 'ID/姓名':
             cursor.execute('''
@@ -408,7 +410,7 @@ def return_book(bno: str, sno: str) -> bool:
     '''
     try:
         res = True
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         # 先把借书日期，书本剩余数量，罚金等信息找出
         cursor.execute('''
@@ -457,7 +459,7 @@ def pay(bno: str, sno: str, punish_money: int) -> bool:
     '''
     try:
         res = True
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
 
         # book表内NUM加一，删除borrowing_book表内的记录，把记录插入log表
@@ -484,7 +486,7 @@ def get_log(ID: str, bno: bool = False) -> list:
     返回[[sno, bno, bname, borrow_date, return_date, punish_money],...]
     '''
     try:
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         if ID == '' or ID == 'ID/姓名':
             cursor.execute('''
@@ -542,7 +544,7 @@ def new_book(book_info: dict) -> bool:
     '''
     res = True
     try:
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
             SELECT *
@@ -608,7 +610,7 @@ def get_book_info(bno: str) -> dict:
     }
     '''
     try:
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         # 获取book表内的书本信息
         cursor.execute('''
@@ -668,7 +670,7 @@ def update_book(book_info: dict) -> bool:
     '''
     try:
         res = True
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         # 更新book表
         cursor.execute('''
@@ -723,7 +725,7 @@ def delete_book(bno: str) -> bool:
     '''
     try:
         res = True
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         cursor.execute('''
             DELETE
@@ -757,7 +759,7 @@ def delete_book(bno: str) -> bool:
 
 
 # 把book元组转换为list
-def tuple_to_list(val: list):  # val是一个tuple的列表
+def tuple_to_list(val: list): # val是一个tuple的列表
     '''
     传入tuple列表把里面的tuple都转换为list同时去掉字符串里的空格
     '''
@@ -780,29 +782,29 @@ def search_book(info: str, restrict: str, sno: str = '') -> list:
     '''
     try:
         res = []
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
 
         # 显示所有书信息
         if info == 'ID/书名/作者/出版社' or info == '':
             cursor.execute('''
-            SELECT bno, bname, author, date, press, position, sum, rest
-            FROM book
+            SELECT *
+            FROM allbook
             ''')
             res = tuple_to_list(cursor.fetchall())
         elif restrict != 'bno' and restrict != 'class':
             # AUTHOR或PRESS或BNAME
             cursor.execute(f'''
-            SELECT bno, bname, author, date, press, position, sum, rest
-            FROM book
+            SELECT *
+            FROM allbook
             WHERE {restrict} LIKE %s
             ''', ('%' + info + '%'))
             res = tuple_to_list(cursor.fetchall())
         elif restrict == 'bno':
             # bno
             cursor.execute('''
-            SELECT bno, bname, author, date, press, position, sum, rest
-            FROM book
+            SELECT *
+            FROM allbook
             WHERE bno = %s
             ''', (info))
             res = tuple_to_list(cursor.fetchall())
@@ -908,7 +910,7 @@ def borrow_book(bno: str, sno: str) -> bool:
     '''
     try:
         res = True
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'], database=config['db'])
+        conn = pymysql.connect(host=CONFIG['host'], user=CONFIG['user'], password=CONFIG['pwd'], database=CONFIG['db'])
         cursor = conn.cursor()
         # 先把借书日期，书本剩余数量，罚金等信息找出
         cursor.execute('''
@@ -918,7 +920,7 @@ def borrow_book(bno: str, sno: str) -> bool:
         ''', (bno))
         book_mes = cursor.fetchall()
         # print(book_mes)
-        rest = book_mes[0][0]  # book_mes[0][0]
+        rest = book_mes[0][0]   # book_mes[0][0]
         borrow_date = time.strftime("%Y-%m-%d-%H:%M")
         deadline = postpone(borrow_date)
 

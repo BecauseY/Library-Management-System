@@ -1,15 +1,16 @@
 import time
 import pymysql
 
-# 读取配置文件
-with open('config.txt', 'r') as f:
-    config = eval(f.read())
-    f.close()
+Config = {
+    "host": 'localhost',
+    "user": 'root',
+    "pwd": '1234'
+}
 
 
 def create_database():
     try:
-        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'])
+        conn = pymysql.connect(host=Config['host'], user=Config['user'], password=Config['pwd'])
         cursor = conn.cursor()
         conn.autocommit(True)
         cursor.execute("CREATE DATABASE library3")
@@ -46,6 +47,9 @@ def create_database():
         );
         """)
 
+
+
+
         cursor.execute("""CREATE TABLE `borrowing_book`(
             `bno` char(15),
             `sno` char(15),
@@ -80,6 +84,22 @@ def create_database():
         INTO administrator
         VALUES('admin', '123456')
         """)
+
+        # 显示所有书信息
+        cursor.execute("""
+        CREATE VIEW allbook as
+                SELECT bno, bname, author, date, press, position, sum, rest
+                FROM book
+              """)
+        # 显示所有学生信息
+        cursor.execute("""
+            CREATE VIEW allstudent as
+                SELECT sno, sname, sex, dept, majority, max_book
+                FROM  student
+                    """)
+
+
+
         conn.commit()
     except Exception as e:
         print('Init fall')
