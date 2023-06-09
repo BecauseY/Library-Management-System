@@ -138,17 +138,17 @@ class StudentInfo(QGroupBox):
         self.initUI()
 
     def inputClick(self, e):
-        for i in range(2, 10):  # 从2开始，因为前两个是标题和副标题
-            item = self.bodyLayout.itemAt(i).widget()  # 获取第i个控件
+        for i in range(2, 10): # 从2开始，因为前两个是标题和副标题
+            item = self.bodyLayout.itemAt(i).widget()   # 获取第i个控件
             if item.text() == '':
-                item.setText(item.initText)  # 设置初始文本
+                item.setText(item.initText)             # 设置初始文本
                 if item is self.passwordInput or item is self.repPasswordInput:
                     item.setEchoMode(QLineEdit.Normal)  # 显示密码
 
         if e.text() == e.initText:
             e.setText('')
         if e is self.passwordInput or e is self.repPasswordInput:
-            e.setEchoMode(QLineEdit.Password)  # 隐藏密码
+            e.setEchoMode(QLineEdit.Password)        # 隐藏密码
 
     def submitFunction(self):
         if not self.maxNumInput.text().isalnum():
