@@ -53,6 +53,14 @@ class StudentInfo(QGroupBox):
         self.nameInput.setTextMargins(5, 5, 5, 5)
         self.nameInput.mousePressEvent = lambda x: self.inputClick(self.nameInput)
 
+        # 性别输入框
+        self.sexInput = QLineEdit()
+        self.sexInput.setFixedSize(400, 40)
+        self.sexInput.setText(self.stu_info['sex'])
+        self.sexInput.initText = '请输入性别'
+        self.sexInput.setTextMargins(5, 5, 5, 5)
+        self.sexInput.mousePressEvent = lambda x: self.inputClick(self.sexInput)
+
         # 密码
         self.passwordInput = QLineEdit()
         self.passwordInput.setFixedSize(400, 40)
@@ -108,6 +116,7 @@ class StudentInfo(QGroupBox):
         self.btnList = [
             self.SIDInput,
             self.nameInput,
+            self.sexInput,
             self.passwordInput,
             self.repPasswordInput,
             self.deptInput,
@@ -127,17 +136,17 @@ class StudentInfo(QGroupBox):
         self.initUI()
 
     def inputClick(self, e):
-        for i in range(2, 9):
-            item = self.bodyLayout.itemAt(i).widget()
+        for i in range(2, 10): # 从2开始，因为前两个是标题和副标题
+            item = self.bodyLayout.itemAt(i).widget()   # 获取第i个控件
             if item.text() == '':
-                item.setText(item.initText)
+                item.setText(item.initText)             # 设置初始文本
                 if item is self.passwordInput or item is self.repPasswordInput:
-                    item.setEchoMode(QLineEdit.Normal)
+                    item.setEchoMode(QLineEdit.Normal)  # 显示密码
 
         if e.text() == e.initText:
             e.setText('')
         if e is self.passwordInput or e is self.repPasswordInput:
-            e.setEchoMode(QLineEdit.Password)
+            e.setEchoMode(QLineEdit.Password)        # 隐藏密码
 
     def submitFunction(self):
         if not self.maxNumInput.text().isalnum():
@@ -151,6 +160,7 @@ class StudentInfo(QGroupBox):
                 return
             self.stu_info['password'] = func.encrypt(self.passwordInput.text())
         self.stu_info['sname'] = self.nameInput.text()
+        self.stu_info['sex'] = self.sexInput.text()
         self.stu_info['dept'] = self.deptInput.text()
         self.stu_info['majority'] = self.majorInput.text()
         self.stu_info['max_book'] = int(self.maxNumInput.text())
@@ -203,6 +213,7 @@ if __name__ == '__main__':
     stu_msg = temp = {
         'sno': '201602',
         'sname': '小王',
+        'sex': '男',
         'dept': '数学与信息科学学院',
         'majority': 'SE',
         'max_book': 5

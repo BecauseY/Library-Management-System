@@ -1,16 +1,15 @@
 import time
 import pymysql
 
-Config = {
-    "host": 'localhost',
-    "user": 'root',
-    "pwd": '123456'
-}
+# 读取配置文件
+with open('config.txt', 'r') as f:
+    config = eval(f.read())
+    f.close()
 
 
 def create_database():
     try:
-        conn = pymysql.connect(host=Config['host'], user=Config['user'], password=Config['pwd'])
+        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'])
         cursor = conn.cursor()
         conn.autocommit(True)
         cursor.execute("CREATE DATABASE library3")
@@ -42,9 +41,11 @@ def create_database():
             `press` char(20),
             `position` char(10),
             `sum` int,
-            `rest` int
+            `rest` int,
+            `count` int default 0
         );
         """)
+
         cursor.execute("""CREATE TABLE `borrowing_book`(
             `bno` char(15),
             `sno` char(15),
@@ -54,6 +55,12 @@ def create_database():
             PRIMARY KEY(bno, sno) 
         );
         """)
+
+        cursor.execute("""CREATE trigger `bcount` after insert 
+                    on `borrowing_book` for each row
+                    update book set count = count + 1, rest = rest - 1 where bno = new.bno;
+                """)
+
         cursor.execute("""CREATE TABLE `log`(
             `bno` char(15),
             `sno` char(15),
