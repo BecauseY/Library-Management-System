@@ -1,0 +1,12 @@
+altgraph==0.17.3
+cffi==1.15.1
+cryptography==40.0.2
+pefile==2023.2.7
+pycparser==2.21
+pyinstaller==5.11.0
+pyinstaller-hooks-contrib==2023.3
+PyMySQL==1.0.3
+PyQt5==5.15.9
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.12.1
+pywin32-ctypes==0.2.0
