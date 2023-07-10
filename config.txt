@@ -1,0 +1,6 @@
+{
+"host"	: 'localhost',
+"user"	: 'root',
+"pwd"	: '123456',
+'db'	: 'library3'
+}

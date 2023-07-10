@@ -1,16 +1,16 @@
 import time
 import pymysql
 
-Config = {
-    "host": '127.0.0.1',
-    "user": 'root',
-    "pwd": 'root'
-}
+
+# 读取配置文件
+with open('config.txt', 'r') as f:
+    config = eval(f.read())
+    f.close()
 
 
 def create_database():
     try:
-        conn = pymysql.connect(Config['host'], Config['user'], Config['pwd'])
+        conn = pymysql.connect(host=config['host'], user=config['user'], password=config['pwd'])
         cursor = conn.cursor()
         conn.autocommit(True)
         cursor.execute("CREATE DATABASE library3")
@@ -22,6 +22,7 @@ def create_database():
             `sno` varchar(15),
             `password` varchar(70),
             `sname` varchar(10),
+            `sex` varchar(2),
             `dept` varchar(20),
             `majority` varchar(20),
             `max_book` int,
@@ -41,9 +42,11 @@ def create_database():
             `press` char(20),
             `position` char(10),
             `sum` int,
-            `rest` int
+            `rest` int,
+            `count` int default 0
         );
         """)
+
         cursor.execute("""CREATE TABLE `borrowing_book`(
             `bno` char(15),
             `sno` char(15),
@@ -53,6 +56,12 @@ def create_database():
             PRIMARY KEY(bno, sno) 
         );
         """)
+
+        cursor.execute("""CREATE trigger `bcount` after insert 
+                    on `borrowing_book` for each row
+                    update book set count = count + 1, rest = rest - 1 where bno = new.bno;
+                """)
+
         cursor.execute("""CREATE TABLE `log`(
             `bno` char(15),
             `sno` char(15),
@@ -72,6 +81,22 @@ def create_database():
         INTO administrator
         VALUES('admin', '123456')
         """)
+
+        # 显示所有书信息
+        cursor.execute("""
+        CREATE VIEW allbook as
+                SELECT bno, bname, author, date, press, position, sum, rest
+                FROM book
+              """)
+        # 显示所有学生信息
+        cursor.execute("""
+            CREATE VIEW allstudent as
+                SELECT sno, sname, sex, dept, majority, max_book
+                FROM  student
+                    """)
+
+
+
         conn.commit()
     except Exception as e:
         print('Init fall')

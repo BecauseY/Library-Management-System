@@ -108,7 +108,7 @@ class MainWindow(QWidget):
 
     def setMyStyle(self):
         window_pale = QtGui.QPalette()
-        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("D:\\bg.jpg").scaled(1280, 720)))
+        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("bg.jpg").scaled(1280, 720)))
         self.setPalette(window_pale)
 
 
