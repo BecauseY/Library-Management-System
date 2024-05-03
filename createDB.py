@@ -1,23 +1,26 @@
-import time
 import pymysql
 
 Config = {
     "host": '127.0.0.1',
     "user": 'root',
-    "pwd": 'root'
+    "pwd": '123456',
+    'db': 'library'
 }
 
 
 def create_database():
     try:
-        conn = pymysql.connect(Config['host'], Config['user'], Config['pwd'])
+        conn = pymysql.connect(host=Config['host'], user=Config['user'], password=Config['pwd'])
+        print("成功连接到数据库")
         cursor = conn.cursor()
         conn.autocommit(True)
-        cursor.execute("CREATE DATABASE library3")
+        cursor.execute("CREATE DATABASE `{}`".format(Config['db']))
         conn.autocommit(False)
-        cursor.execute("use library3")
+        cursor.execute("use `{}`".format(Config['db']))
+        print("成功创建数据库：{}".format(Config['db']))
 
-        # 创建学生表
+        print("开始创建数据表")
+        # 创建学生信息表
         cursor.execute("""CREATE TABLE `student`(
             `sno` varchar(15),
             `password` varchar(70),
@@ -27,12 +30,14 @@ def create_database():
             `max_book` int,
             primary key(`sno`))
         """)
+        # 创建管理员表
         cursor.execute("""CREATE TABLE `administrator`(
             `aid` varchar(15) ,
             `password` varchar(70),
             primary key(`aid`)
         );
         """)
+        # 创建书籍信息表
         cursor.execute("""CREATE TABLE `book`(
             `bno` char(15) PRIMARY KEY,
             `bname` text,
@@ -44,6 +49,7 @@ def create_database():
             `rest` int
         );
         """)
+        # 创建借书表
         cursor.execute("""CREATE TABLE `borrowing_book`(
             `bno` char(15),
             `sno` char(15),
@@ -53,6 +59,7 @@ def create_database():
             PRIMARY KEY(bno, sno) 
         );
         """)
+        # 创建日志表
         cursor.execute("""CREATE TABLE `log`(
             `bno` char(15),
             `sno` char(15),
@@ -61,20 +68,24 @@ def create_database():
             `punish_money` int
         );
         """)
+        # 创建书籍分类表
         cursor.execute(""" CREATE TABLE `classification`(
             `bno` char(15),
             `class` varchar(15),
             PRIMARY KEY(bno, class)
         );
         """)
+
+        # 导入默认管理员账号密码：admin/123456，导入数据库的是加密之后的信息
         cursor.execute("""
         INSERT
         INTO administrator
-        VALUES('admin', '123456')
+        VALUES('admin', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92')
         """)
         conn.commit()
+        print("成功创建所有数据表")
     except Exception as e:
-        print('Init fall')
+        print('数据库建立失败，报错信息如下：')
         print(e)
     finally:
         if conn:
